@@ -10,7 +10,7 @@ $(function(){
 
   function getList(){
       $.get(
-        "getList",
+        "?s=/home/member/getList",
         { "item_id": item_id },
         function(data){
           $("#show-cat").html('');
@@ -34,13 +34,14 @@ $(function(){
   //保存
   $("#save-cat").click(function(){
       var username = $("#username").val();
+      var member_group_id = $("#member_group_id").is(':checked') ? 0 : 1 ;
       $.post(
-        "save",
-        {"username": username ,"item_id": item_id  },
+        "?s=/home/member/save",
+        {"username": username ,"item_id": item_id,"member_group_id": member_group_id   },
         function(data){
           if (data.error_code == 0) {
             $("#username").val('');
-            alert("保存成功！");
+            alert(lang["save_success"]);
           }else{
             alert(data.error_message);
 
@@ -56,17 +57,19 @@ $(function(){
   //删除
   $('#show-cat').delegate('.single-cat','click', function(){
       var username = $(this).attr("data-username");
-
+        if (!confirm(lang['confirm_to_delete_member'])) {
+            return false;
+        }
       if (username) {
           $.post(
-              "delete",
+              "?s=/home/member/delete",
               { "username": username, "item_id" :item_id },
               function(data){
                 if (data.error_code == 0) {
-                  alert("删除成功！");
+                  alert(lang["delete_success"]);
                   getList();
                 }else{
-                  alert("删除失败！");
+                  alert(lang["delete_fail"]);
 
                 }
               },
@@ -79,7 +82,7 @@ $(function(){
 
   $(".exist-cat").click(function(){
     
-    window.location.href="../item/show?item_id="+item_id;
+    window.location.href="?s=/home/item/show&item_id="+item_id;
   });
 
 });
